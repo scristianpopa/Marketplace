@@ -15,17 +15,22 @@ class Marketplace:
     def __init__(self, queue_size_per_producer):
         """
         Constructor
-
+        
         :type queue_size_per_producer: Int
         :param queue_size_per_producer: the maximum size of a queue associated with each producer
         """
-        pass
+        self.q_size = queue_size_per_producer
+        self.producers = {}
+        self.carts = []
+
 
     def register_producer(self):
         """
         Returns an id for the producer that calls this.
         """
-        pass
+        id = 'prod' + str(len(producers))
+        producers[id] = []
+        return id
 
     def publish(self, producer_id, product):
         """
@@ -47,7 +52,9 @@ class Marketplace:
 
         :returns an int representing the cart_id
         """
-        pass
+        id = len(carts)
+        carts.append([])
+        return id
 
     def add_to_cart(self, cart_id, product):
         """
@@ -82,4 +89,4 @@ class Marketplace:
         :type cart_id: Int
         :param cart_id: id cart
         """
-        pass
+        return carts[cart_id]
