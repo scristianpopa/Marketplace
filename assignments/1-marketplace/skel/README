@@ -1,0 +1,22 @@
+Popa Stefan Cristian
+331CA
+Homework #1: Marketplace
+
+    The main logic of the homework in contained whithin the Marketplace class,
+producer and consumer just iterating through their respective lists and calling
+the appropriate methods from Marketplace.
+    For registering new producers and assigning new carts to consumers I'm
+using a lock for each respective action, in order to make sure each producer_id
+and cart_id is unique.
+    Every access to a publisher's queue is protected by the lock assigned to
+that publisher since we don't want to publish a new product while a consumer
+is looking do add or remove a product from the cart. Cart operations don't have
+to be syncronized since only the consumer which owns that cart can access it.
+    Each cart is a dictionary where the products are the keys and the values
+are a list of the producers who have published those products.
+
+Remarks
+    Overall the homework was too simple and honestly I don't really see it's
+purpose in this course's context. I have to say that I did learn a few new
+Python tricks while working on this, but other than that, I feel like the
+homework didn't assess any particular skill.

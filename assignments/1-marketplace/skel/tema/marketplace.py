@@ -15,7 +15,7 @@ class Marketplace:
     def __init__(self, queue_size_per_producer):
         """
         Constructor
-        
+
         :type queue_size_per_producer: Int
         :param queue_size_per_producer: the maximum size of a queue associated with each producer
         """
@@ -23,18 +23,19 @@ class Marketplace:
         self.producers = {}
         self.producer_locks = {}
         self.carts = []
-        self.register_lock = Lock()
+        self.producer_registration_lock = Lock()
+        self.cart_registration_lock = Lock()
 
     def register_producer(self):
         """
         Returns an id for the producer that calls this.
         """
-        self.register_lock.acquire()
-        id = 'prod' + str(len(self.producers))
-        self.producers[id] = []
-        self.producer_locks[id] = Lock() 
-        self.register_lock.release()
-        return id
+        self.producer_registration_lock.acquire()
+        producer_id = 'prod' + str(len(self.producers))
+        self.producers[producer_id] = []
+        self.producer_locks[producer_id] = Lock()
+        self.producer_registration_lock.release()
+        return producer_id
 
     def publish(self, producer_id, product):
         """
@@ -48,9 +49,12 @@ class Marketplace:
 
         :returns True or False. If the caller receives False, it should wait and then try again.
         """
+        self.producer_locks[producer_id].acquire()
         if len(self.producers[producer_id]) >= self.q_size:
+            self.producer_locks[producer_id].release()
             return False
         self.producers[producer_id].append(product)
+        self.producer_locks[producer_id].release()
         return True
 
     def new_cart(self):
@@ -59,11 +63,11 @@ class Marketplace:
 
         :returns an int representing the cart_id
         """
-        self.register_lock.acquire()
-        id = len(self.carts)
+        self.cart_registration_lock.acquire()
+        cart_id = len(self.carts)
         self.carts.append({})
-        self.register_lock.release()
-        return id
+        self.cart_registration_lock.release()
+        return cart_id
 
     def add_to_cart(self, cart_id, product):
         """
@@ -79,15 +83,15 @@ class Marketplace:
         """
         if product not in self.carts[cart_id]:
             self.carts[cart_id][product] = []
-        for id, products in self.producers.items():
-            self.producer_locks[id].acquire()
+        for producer_id, products in self.producers.items():
+            self.producer_locks[producer_id].acquire()
             for prod in products:
                 if prod == product:
-                    self.carts[cart_id][product].append(id)
+                    self.carts[cart_id][product].append(producer_id)
                     products.remove(prod)
-                    self.producer_locks[id].release()
+                    self.producer_locks[producer_id].release()
                     return True
-            self.producer_locks[id].release()
+            self.producer_locks[producer_id].release()
         return False
 
     def remove_from_cart(self, cart_id, product):

@@ -31,28 +31,7 @@ Test 10:		PASSED
 
 Run pylint
 
-************* Module consumer
-tema/consumer.py:50:0: C0301: Line too long (104/100) (line-too-long)
-tema/consumer.py:55:0: C0304: Final newline missing (missing-final-newline)
-tema/consumer.py:46:30: C0121: Comparison to False should be 'not expr' (singleton-comparison)
-tema/consumer.py:50:30: C0121: Comparison to False should be 'not expr' (singleton-comparison)
-tema/consumer.py:45:24: W0612: Unused variable 'i' (unused-variable)
-************* Module marketplace
-tema/marketplace.py:18:0: C0303: Trailing whitespace (trailing-whitespace)
-tema/marketplace.py:35:40: C0303: Trailing whitespace (trailing-whitespace)
-tema/marketplace.py:33:8: W0622: Redefining built-in 'id' (redefined-builtin)
-tema/marketplace.py:33:8: C0103: Variable name "id" doesn't conform to snake_case naming style ('([^\\W\\dA-Z][^\\WA-Z]{2,}|_[^\\WA-Z]*|__[^\\WA-Z\\d_][^\\WA-Z]+__)$' pattern) (invalid-name)
-tema/marketplace.py:63:8: W0622: Redefining built-in 'id' (redefined-builtin)
-tema/marketplace.py:63:8: C0103: Variable name "id" doesn't conform to snake_case naming style ('([^\\W\\dA-Z][^\\WA-Z]{2,}|_[^\\WA-Z]*|__[^\\WA-Z\\d_][^\\WA-Z]+__)$' pattern) (invalid-name)
-tema/marketplace.py:82:12: W0622: Redefining built-in 'id' (redefined-builtin)
-tema/marketplace.py:82:12: C0103: Variable name "id" doesn't conform to snake_case naming style ('([^\\W\\dA-Z][^\\WA-Z]{2,}|_[^\\WA-Z]*|__[^\\WA-Z\\d_][^\\WA-Z]+__)$' pattern) (invalid-name)
-************* Module producer
-tema/producer.py:40:0: C0303: Trailing whitespace (trailing-whitespace)
-tema/producer.py:48:0: C0303: Trailing whitespace (trailing-whitespace)
-tema/producer.py:39:8: C0103: Attribute name "id" doesn't conform to snake_case naming style ('([^\\W\\dA-Z][^\\WA-Z]{2,}|_[^\\WA-Z]*|__[^\\WA-Z\\d_][^\\WA-Z]+__)$' pattern) (invalid-name)
-tema/producer.py:46:26: C0121: Comparison to False should be 'not expr' (singleton-comparison)
-tema/producer.py:44:20: W0612: Unused variable 'i' (unused-variable)
 
-------------------------------------------------------------------
-Your code has been rated at 8.12/10 (previous run: 8.11/10, +0.02)
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 7.98/10, +2.02)
 
