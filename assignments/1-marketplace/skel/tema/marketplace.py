@@ -23,15 +23,17 @@ class Marketplace:
         self.producers = {}
         self.producer_locks = {}
         self.carts = []
-
+        self.register_lock = Lock()
 
     def register_producer(self):
         """
         Returns an id for the producer that calls this.
         """
-        id = 'prod' + str(len(producers))
-        producers[id] = []
-        producer_locks[id] = Lock() 
+        self.register_lock.acquire()
+        id = 'prod' + str(len(self.producers))
+        self.producers[id] = []
+        self.producer_locks[id] = Lock() 
+        self.register_lock.release()
         return id
 
     def publish(self, producer_id, product):
@@ -46,7 +48,10 @@ class Marketplace:
 
         :returns True or False. If the caller receives False, it should wait and then try again.
         """
-        pass
+        if len(self.producers[producer_id]) >= self.q_size:
+            return False
+        self.producers[producer_id].append(product)
+        return True
 
     def new_cart(self):
         """
@@ -54,8 +59,10 @@ class Marketplace:
 
         :returns an int representing the cart_id
         """
-        id = len(carts)
-        carts.append([])
+        self.register_lock.acquire()
+        id = len(self.carts)
+        self.carts.append({})
+        self.register_lock.release()
         return id
 
     def add_to_cart(self, cart_id, product):
@@ -70,7 +77,18 @@ class Marketplace:
 
         :returns True or False. If the caller receives False, it should wait and then try again
         """
-        pass
+        if product not in self.carts[cart_id]:
+            self.carts[cart_id][product] = []
+        for id, products in self.producers.items():
+            self.producer_locks[id].acquire()
+            for prod in products:
+                if prod == product:
+                    self.carts[cart_id][product].append(id)
+                    self.products.remove(prod)
+                    self.producer_locks[id].release()
+                    return True
+            self.producer_locks[id].release()
+        return False
 
     def remove_from_cart(self, cart_id, product):
         """
@@ -82,10 +100,10 @@ class Marketplace:
         :type product: Product
         :param product: the product to remove from cart
         """
-        producer_id = carts[cart_id][product].pop(0)
-        producer_locks[producer_id].acquire()
-        producers[producer_id].append(product)
-        producer_locks[producer_id].release()
+        producer_id = self.carts[cart_id][product].pop(0)
+        self.producer_locks[producer_id].acquire()
+        self.producers[producer_id].append(product)
+        self.producer_locks[producer_id].release()
 
     def place_order(self, cart_id):
         """
@@ -94,5 +112,5 @@ class Marketplace:
         :type cart_id: Int
         :param cart_id: id cart
         """
-        unflattened = [carts[cart_id][i] * [i] for i in carts[cart_id].keys()]
+        unflattened = [self.carts[cart_id][i] * [i] for i in self.carts[cart_id].keys()]
         return [item for sublist in unflattened for item in sublist]
