@@ -5,7 +5,7 @@ Computer Systems Architecture Course
 Assignment 1
 March 2021
 """
-
+from threading import Lock
 
 class Marketplace:
     """
@@ -84,7 +84,7 @@ class Marketplace:
             for prod in products:
                 if prod == product:
                     self.carts[cart_id][product].append(id)
-                    self.products.remove(prod)
+                    products.remove(prod)
                     self.producer_locks[id].release()
                     return True
             self.producer_locks[id].release()
@@ -112,5 +112,4 @@ class Marketplace:
         :type cart_id: Int
         :param cart_id: id cart
         """
-        unflattened = [self.carts[cart_id][i] * [i] for i in self.carts[cart_id].keys()]
-        return [item for sublist in unflattened for item in sublist]
+        return [(product, len(producers)) for product, producers in self.carts[cart_id].items()]
