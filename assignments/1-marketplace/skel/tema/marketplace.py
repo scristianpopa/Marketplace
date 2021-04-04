@@ -21,6 +21,7 @@ class Marketplace:
         """
         self.q_size = queue_size_per_producer
         self.producers = {}
+        self.producer_locks = {}
         self.carts = []
 
 
@@ -30,6 +31,7 @@ class Marketplace:
         """
         id = 'prod' + str(len(producers))
         producers[id] = []
+        producer_locks[id] = Lock() 
         return id
 
     def publish(self, producer_id, product):
@@ -80,7 +82,10 @@ class Marketplace:
         :type product: Product
         :param product: the product to remove from cart
         """
-        pass
+        producer_id = carts[cart_id][product].pop(0)
+        producer_locks[producer_id].acquire()
+        producers[producer_id].append(product)
+        producer_locks[producer_id].release()
 
     def place_order(self, cart_id):
         """
@@ -89,4 +94,5 @@ class Marketplace:
         :type cart_id: Int
         :param cart_id: id cart
         """
-        return carts[cart_id]
+        unflattened = [carts[cart_id][i] * [i] for i in carts[cart_id].keys()]
+        return [item for sublist in unflattened for item in sublist]
